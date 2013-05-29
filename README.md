@@ -14,7 +14,7 @@ The current implementation of [Snowflake](https://github.com/twitter/snowflake) 
 
 The default size of Snowflake's IDs are 64 bits wide, sporting a 42 bits timestamp and and 24 bits space for the worker id and sequence id (if several ids would be generated at closely the same time).
 
-Because our architecture don't have a direct limit to a key size of 64 bits, `Vlok` uses 128 bits ids for more detailed timestamps and the possibility of cluster-wide uniqueness without introducing a managing architecture. Resulting in a cheaper usage, using larger numbers!   
+Because our architecture doesn't have direct limits for a key size of 64 bits, `Vlok` uses 128 bits ids for more detailed timestamps and the possibility of cluster-wide uniqueness without introducing a managing architecture. Resulting in a cheaper usage, using larger numbers!   
 
 ## Anatomy
 128-bits wide described here from most significant to least significant bits.
