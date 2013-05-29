@@ -8,7 +8,7 @@ It generates cluster-wide unique IDs with high performance using the [Akka IO](h
 The current implementation is able to push over **1 million ids** per second from server to clients on commodity hardware.
 
 ## Why no slowflake?
-`Vlok` is dutch for "Flake" and while we have our cheese, wooden shoes and windmills. We love large numbers ($) and cheap things the most! 
+`Vlok` is Dutch for "Flake" and while we have our cheese, wooden shoes and windmills. We love large numbers ($) and cheap things the most! 
 
 The current implementation of [Snowflake](https://github.com/twitter/snowflake) has the requirement to coordinate the uniqueness of IDs through "server ids" generated through Zookeeper. Something as simple as ID generation shouldn't be weighted down by a implementation of Zookeeper (especially if you aren't using it anywhere else).
 
