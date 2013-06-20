@@ -1,13 +1,15 @@
 import sbt._
 import Keys._
+import sbtassembly.Plugin._
+import AssemblyKeys._
 
 object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
     Seq(
       name := "vlok",
-      version := "0.1",
+      version := "0.2",
       organization := "nl.gideondk",
-      scalaVersion := "2.10.0",
+      scalaVersion := "2.10.2",
       parallelExecution in Test := false,
       resolvers ++= Seq(Resolver.mavenLocal,
         "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
@@ -19,14 +21,10 @@ object ApplicationBuild extends Build {
     )
 
   val appDependencies = Seq(
-    "org.scalaz" %% "scalaz-core" % "7.0.0",
-    "org.scalaz" %% "scalaz-effect" % "7.0.0",
     "org.specs2" %% "specs2" % "1.13",
-
-    "com.typesafe.akka" % "akka-actor_2.10" % "2.2-M3",
-
-    "nl.spotdog" %% "bark" % "0.2.3",
-    "nl.gideondk" %% "sentinel" % "0.4.1"
+    
+    "nl.spotdog" %% "bark" % "0.2.7",
+    "nl.gideondk" %% "sentinel" % "0.5.2"
   )
 
   lazy val root = Project(id = "vlok",
@@ -34,7 +32,15 @@ object ApplicationBuild extends Build {
     settings = Project.defaultSettings ++ Seq(
       libraryDependencies ++= appDependencies,
       mainClass := Some("Main")
-    ) ++ Format.settings
+    ) ++ Format.settings ++ assemblySettings 
+  ) settings (
+    mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
+      case ".DS_Store" => MergeStrategy.discard
+      case "application.conf" => MergeStrategy.concat
+      case x => old(x)
+    }
+  },
+    mainClass in assembly := Some("nl.gideondk.vlok.Main")
   )
 }
 
