@@ -7,7 +7,7 @@ object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
     Seq(
       name := "vlok",
-      version := "0.2",
+      version := "0.2.1",
       organization := "nl.gideondk",
       scalaVersion := "2.10.2",
       parallelExecution in Test := false,
@@ -23,7 +23,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "org.specs2" %% "specs2" % "1.13",
     
-    "nl.spotdog" %% "bark" % "0.2.7",
+    "nl.spotdog" %% "bark" % "0.2.8",
     "nl.gideondk" %% "sentinel" % "0.5.2"
   )
 
