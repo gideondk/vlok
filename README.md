@@ -68,7 +68,7 @@ to your SBT configuration and adding the package to your library dependencies:
 
 ```scala
 libraryDependencies ++= Seq(
-	"nl.gideondk" %% "vlok" % "0.2.1"
+	"nl.gideondk" %% "vlok" % "0.2.2"
 )
 ```
 
