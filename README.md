@@ -3,12 +3,12 @@
 ## Overview
 Vlok is a decentralized service for the generation of unique, time-ordered IDs.
 
-It generates cluster-wide unique IDs with high performance using the [Akka IO](http://doc.akka.io/docs/akka/snapshot/scala/io.html) implementation through [Bark](http://github.com/lab050/bark).
+It generates cluster-wide unique IDs with high performance using the [Akka IO](http://doc.akka.io/docs/akka/snapshot/scala/io.html) implementation through [Nucleus](http://github.com/gideondk/nucleus).
 
 The current implementation is able to push over **1 million ids** per second from server to clients on commodity hardware.
 
 ## Why no slowflake?
-`Vlok` is Dutch for "Flake" and while we have our cheese, wooden shoes and windmills. We love large numbers ($) and cheap things the most!
+`Vlok` is Dutch for "Flake" and while we have our cheese, wooden shoes and windmills. Our preference goes to large numbers ($) and cheap things!
 
 The current implementation of [Snowflake](https://github.com/twitter/snowflake) has the requirement to coordinate the uniqueness of IDs through "server ids" generated through Zookeeper. Something as simple as ID generation shouldn't be weighted down by a implementation of Zookeeper (especially if you aren't using it anywhere else).
 
@@ -68,12 +68,12 @@ to your SBT configuration and adding the package to your library dependencies:
 
 ```scala
 libraryDependencies ++= Seq(
-	"nl.gideondk" %% "vlok" % "0.2.2"
+	"nl.gideondk" %% "vlok" % "0.3.0"
 )
 ```
 
 # License
-Copyright © 2013 Gideon de Kok
+Copyright © 2014 Gideon de Kok
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

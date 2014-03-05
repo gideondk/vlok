@@ -1,14 +1,12 @@
 package nl.gideondk.vlok.server
 
-import nl.spotdog.bark.server._
-import nl.spotdog.bark.protocol._
+import nl.gideondk.nucleus._
+import nl.gideondk.nucleus.protocol._
 import ETF._
 
 import scalaz._
 import Scalaz._
 import effect._
-
-import BarkServerModule._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,19 +19,19 @@ import akka.routing._
 
 import java.net.{ NetworkInterface, InetAddress }
 
-class VlokServer(interface: Long)(implicit system: ActorSystem) extends BarkRouting {
+class VlokServer(interface: Long)(implicit system: ActorSystem) extends Routing {
   implicit val timeout = Timeout(5 second)
 
   val generator = system.actorOf(Props(new VlokGenerator(interface)))
 
-  val modules = module("vlok") {
+  val modules = Module("vlok") {
     call("generateID")(() ⇒ (generator ? GenerateID).mapTo[BigInt])
   }
 
-  private val barkServer = BarkServer("Vlok Server")(modules)
+  private val server = Server("Vlok Server", modules)
 
-  def start(port: Int) = barkServer.run(port)
-  def stop = barkServer.stop
+  def start(port: Int) = server.run(port)
+  def stop = server.stop
 
 }
 
