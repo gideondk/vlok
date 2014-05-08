@@ -8,6 +8,10 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 object Main extends LazyLogging {
 
   def main(args: Array[String]) = {
+    sys.addShutdownHook({
+      logger.info("Vlok shutdown")
+    })
+
     val config = ConfigFactory.load()
     val networkInterface = config.getString("vlok.network-interface")
     val port = config.getInt("vlok.port")
