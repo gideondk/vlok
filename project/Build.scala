@@ -1,5 +1,7 @@
 import sbt._
 import Keys._
+import com.typesafe.sbt.SbtNativePackager._
+import NativePackagerKeys._
 
 object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
@@ -15,6 +17,12 @@ object ApplicationBuild extends Build {
       publishTo := Some(Resolver.file("file", new File("/Users/gideondk/Development/gideondk-mvn-repo")))
     )
 
+  val debianPackageSettings = packageArchetype.java_server ++  Seq(
+    packageSummary in Debian := "Generate GUIDS",
+    packageDescription in Debian := "Generate K-sorted unique ids",
+    maintainer in Debian := "Gideon de Kok <gideondk@me.com>"
+  )
+
   val appDependencies = Seq(
     "nl.gideondk" %% "nucleus" % "0.1.3",
 
@@ -27,8 +35,7 @@ object ApplicationBuild extends Build {
     settings = Project.defaultSettings ++ Seq(
       libraryDependencies ++= appDependencies,
       mainClass := Some("Main")
-    ) ++ Format.settings
-  )
+    ) ++ Format.settings ++ debianPackageSettings)
 }
 
 object Format {
