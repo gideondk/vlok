@@ -37,6 +37,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "nl.gideondk" %% "nucleus" % "0.1.3",
     "com.typesafe" % "config" % "1.2.0",
+    "ch.qos.logback" % "logback-classic" % "1.1.2",
+    "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
 
     "org.specs2" %% "specs2" % "1.13" % "test"
   )
