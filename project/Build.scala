@@ -1,7 +1,5 @@
 import sbt._
 import Keys._
-import sbtassembly.Plugin._
-import AssemblyKeys._
 
 object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
@@ -12,34 +10,24 @@ object ApplicationBuild extends Build {
       scalaVersion := "2.10.2",
       parallelExecution in Test := false,
       resolvers ++= Seq(Resolver.mavenLocal,
-        "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
-        "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-        "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
         "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
         "gideondk-repo" at "https://raw.github.com/gideondk/gideondk-mvn-repo/master"),
       publishTo := Some(Resolver.file("file", new File("/Users/gideondk/Development/gideondk-mvn-repo")))
     )
 
   val appDependencies = Seq(
-    "org.specs2" %% "specs2" % "1.13",
-    
-    "nl.gideondk" %% "nucleus" % "0.1.3"
+    "nl.gideondk" %% "nucleus" % "0.1.3",
+
+    "org.specs2" %% "specs2" % "1.13" % "test"
   )
 
-  lazy val root = Project(id = "vlok",
+  lazy val root = Project(
+    id = "vlok",
     base = file("."),
     settings = Project.defaultSettings ++ Seq(
       libraryDependencies ++= appDependencies,
       mainClass := Some("Main")
-    ) ++ Format.settings ++ assemblySettings 
-  ) settings (
-    mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
-      case ".DS_Store" => MergeStrategy.discard
-      case "application.conf" => MergeStrategy.concat
-      case x => old(x)
-    }
-  },
-    mainClass in assembly := Some("nl.gideondk.vlok.Main")
+    ) ++ Format.settings
   )
 }
 
