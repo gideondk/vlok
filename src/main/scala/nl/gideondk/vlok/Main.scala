@@ -2,23 +2,22 @@ package nl.gideondk.vlok
 
 import nl.gideondk.vlok.server.VlokServer
 import akka.actor.ActorSystem
+import com.typesafe.config.ConfigFactory
 
 object Main {
   def main(args: Array[String]) = {
-    if (args.length < 2) {
-      println("Usage: ./sbt \"run interface port\"")
-    } else {
-      implicit val serverSystem = ActorSystem("server-system")
-      try {
-        val networkInterface = args(0)
-        val port = args(1).toInt
-        val server = VlokServer(networkInterface)
-        server.start(port)
-      } catch {
-        case e: Throwable ⇒
-          println(e.getMessage + "\n")
-          serverSystem.shutdown()
-      }
+    val config = ConfigFactory.load()
+    val networkInterface = config.getString("vlok.network-interface")
+    val port = config.getInt("vlok.port")
+    implicit val serverSystem = ActorSystem("server-system")
+
+    try {
+      val server = VlokServer(networkInterface)
+      server.start(port)
+    } catch {
+      case e: Throwable ⇒
+        println(e.getMessage + "\n")
+        serverSystem.shutdown()
     }
   }
 }

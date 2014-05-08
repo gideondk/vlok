@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
+import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
 object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
@@ -20,11 +21,22 @@ object ApplicationBuild extends Build {
   val debianPackageSettings = packageArchetype.java_server ++  Seq(
     packageSummary in Debian := "Generate GUIDS",
     packageDescription in Debian := "Generate K-sorted unique ids",
-    maintainer in Debian := "Gideon de Kok <gideondk@me.com>"
-  )
+    maintainer in Debian := "Gideon de Kok <gideondk@me.com>",
+
+    serverLoading in Debian := SystemV,
+
+    bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/application.conf""""
+  ) ++ Seq(mappings in Universal <+= (packageBin in Compile, sourceDirectory ) map { (_, src) =>
+    // we are using the reference.conf as default application.conf
+    // the user can override settings here
+    val conf = src / "main" / "resources" / "application.conf"
+    conf -> "conf/application.conf"
+  })
+
 
   val appDependencies = Seq(
     "nl.gideondk" %% "nucleus" % "0.1.3",
+    "com.typesafe" % "config" % "1.2.0",
 
     "org.specs2" %% "specs2" % "1.13" % "test"
   )
