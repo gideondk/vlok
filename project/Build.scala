@@ -26,11 +26,12 @@ object ApplicationBuild extends Build {
     serverLoading in Debian := SystemV,
 
     bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/application.conf""""
-  ) ++ Seq(mappings in Universal <+= (packageBin in Compile, sourceDirectory ) map { (_, src) =>
+  ) ++ Seq(mappings in Universal <++= (packageBin in Compile, sourceDirectory) map { (_, src) =>
     // we are using the reference.conf as default application.conf
     // the user can override settings here
     val conf = src / "main" / "resources" / "application.conf"
-    conf -> "conf/application.conf"
+    val logConf = src / "main" / "resources" / "logback.xml"
+    Seq(conf -> "conf/application.conf", logConf -> "conf/logback.xml")
   })
 
 

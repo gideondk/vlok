@@ -1,0 +1,21 @@
+<configuration>
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{HH:mm:ss} %-5level - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <file>logs/app.log</file>
+    <encoder>
+      <pattern>%date{HH:mm:ss} %-5level - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="all">
+    <appender-ref ref="console"/>
+    <appender-ref ref="file"/>
+  </root>
+
+</configuration>

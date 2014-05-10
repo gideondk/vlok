@@ -1,0 +1,5 @@
+# Setting -Xmx and -Xms in Megabyte
+-mem 256
+
+# Referencing a custom config file
+-Dlogback.configurationFile=${{chdir}}/conf/logback.xml
