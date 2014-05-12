@@ -1,46 +1,56 @@
 import sbt._
 import Keys._
-import sbtassembly.Plugin._
-import AssemblyKeys._
+import com.typesafe.sbt.SbtNativePackager._
+import NativePackagerKeys._
+import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
 object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
     Seq(
       name := "vlok",
-      version := "0.3.2",
+      version := "0.4.0",
       organization := "nl.gideondk",
       scalaVersion := "2.10.2",
       parallelExecution in Test := false,
       resolvers ++= Seq(Resolver.mavenLocal,
-        "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
-        "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-        "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
         "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
         "gideondk-repo" at "https://raw.github.com/gideondk/gideondk-mvn-repo/master"),
       publishTo := Some(Resolver.file("file", new File("/Users/gideondk/Development/gideondk-mvn-repo")))
     )
 
+  val debianPackageSettings = packageArchetype.java_server ++  Seq(
+    packageSummary in Debian := "Generate unique, time-ordered IDs",
+    packageDescription in Debian := """Vlok is a decentralized service for the generation of unique, time-ordered IDs.""",
+    maintainer in Debian := "Gideon de Kok <gideondk@me.com>",
+
+    serverLoading in Debian := SystemV,
+
+    bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/application.conf""""
+  ) ++ Seq(mappings in Universal <++= (packageBin in Compile, sourceDirectory) map { (_, src) =>
+    // we are using the reference.conf as default application.conf
+    // the user can override settings here
+    val conf = src / "main" / "resources" / "application.conf"
+    val logConf = src / "main" / "resources" / "logback.xml"
+    Seq(conf -> "conf/application.conf", logConf -> "conf/logback.xml")
+  })
+
+
   val appDependencies = Seq(
-    "org.specs2" %% "specs2" % "1.13",
-    
-    "nl.gideondk" %% "nucleus" % "0.1.3"
+    "nl.gideondk" %% "nucleus" % "0.1.3",
+    "com.typesafe" % "config" % "1.2.0",
+    "ch.qos.logback" % "logback-classic" % "1.1.2",
+    "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
+
+    "org.specs2" %% "specs2" % "1.13" % "test"
   )
 
-  lazy val root = Project(id = "vlok",
+  lazy val root = Project(
+    id = "vlok",
     base = file("."),
     settings = Project.defaultSettings ++ Seq(
       libraryDependencies ++= appDependencies,
       mainClass := Some("Main")
-    ) ++ Format.settings ++ assemblySettings 
-  ) settings (
-    mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
-      case ".DS_Store" => MergeStrategy.discard
-      case "application.conf" => MergeStrategy.concat
-      case x => old(x)
-    }
-  },
-    mainClass in assembly := Some("nl.gideondk.vlok.Main")
-  )
+    ) ++ Format.settings ++ debianPackageSettings)
 }
 
 object Format {

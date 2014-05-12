@@ -2,23 +2,30 @@ package nl.gideondk.vlok
 
 import nl.gideondk.vlok.server.VlokServer
 import akka.actor.ActorSystem
+import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
-object Main {
+object Main extends LazyLogging {
+
   def main(args: Array[String]) = {
-    if (args.length < 2) {
-      println("Usage: ./sbt \"run interface port\"")
-    } else {
-      implicit val serverSystem = ActorSystem("server-system")
-      try {
-        val networkInterface = args(0)
-        val port = args(1).toInt
-        val server = VlokServer(networkInterface)
-        server.start(port)
-      } catch {
-        case e: Throwable ⇒
-          println(e.getMessage + "\n")
-          serverSystem.shutdown()
-      }
+    sys.addShutdownHook({
+      logger.info("Vlok shutdown")
+    })
+
+    val config = ConfigFactory.load()
+    val networkInterface = config.getString("vlok.network-interface")
+    val port = config.getInt("vlok.port")
+    implicit val serverSystem = ActorSystem("server-system")
+
+    logger.info(s"Starting vlok on port: ${port}, using interface: ${networkInterface}")
+    try {
+      val server = VlokServer(networkInterface)
+      server.start(port)
+    } catch {
+      case e: Throwable ⇒
+        println(e.getMessage + "\n")
+        serverSystem.shutdown()
+        logger.info(s"Vlok terminated: ${e.getMessage}")
     }
   }
 }
