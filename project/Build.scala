@@ -8,7 +8,7 @@ object ApplicationBuild extends Build {
   override lazy val settings = super.settings ++
     Seq(
       name := "vlok",
-      version := "0.3.2",
+      version := "0.4.0",
       organization := "nl.gideondk",
       scalaVersion := "2.10.2",
       parallelExecution in Test := false,
@@ -19,8 +19,8 @@ object ApplicationBuild extends Build {
     )
 
   val debianPackageSettings = packageArchetype.java_server ++  Seq(
-    packageSummary in Debian := "Generate GUIDS",
-    packageDescription in Debian := "Generate K-sorted unique ids",
+    packageSummary in Debian := "Generate unique, time-ordered IDs",
+    packageDescription in Debian := """Vlok is a decentralized service for the generation of unique, time-ordered IDs.""",
     maintainer in Debian := "Gideon de Kok <gideondk@me.com>",
 
     serverLoading in Debian := SystemV,
